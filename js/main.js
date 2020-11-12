@@ -67,6 +67,12 @@ const setUsers = {
   },
   //Регистрация
   signUp(email, password, handler) {  
+    
+    if(!email.trim() || !password.trim()) {
+      alert('Введите данные');
+      return;
+    }
+
     if(!this.getUser(email)) {
       const nickName = email.split('@'); // разделили почту на никнейм и почтовый ящик
       const user = {email, password, displayName: `${nickName[0]}`};
