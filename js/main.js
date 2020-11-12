@@ -1,6 +1,7 @@
 let menuToggle = document.querySelector('#menu-toggle');
 let menu = document.querySelector('.sidebar');
 
+// разворачивание меню по клику на маленьких экранах
 menuToggle.addEventListener('click', function (event) {
   event.preventDefault(); 
   menu.classList.toggle('visible');
@@ -15,6 +16,7 @@ const loginElem = document.querySelector('.login'),
 const userElem = document.querySelector('.user'),
   userNameElem = document.querySelector('.user-name');
 
+  // массив хранит пользователей, где displayName это никнейм 
 const listUsers = [
   {
     email: 'svchhh18@gmail.com',
@@ -33,6 +35,7 @@ const listUsers = [
   }
 ];
 
+// функция проверяет есть ли зарегистрированный пользователь, и если есть, то выводит его никнейм и фото, иначе выводит блок с авторизацией
 const toggleAuthDom = () => {
   const user = setUsers.user;
   console.log('user: ', user);
@@ -46,11 +49,11 @@ const toggleAuthDom = () => {
   }
 };
 
-
 const setUsers = {
   user: null,
-  logIn(email, password, handler) {
-    const user = this.getUser(email);
+  //Авторизация
+  logIn(email, password, handler) {  // handler - функция "действие" - это есть третий аргумент toggleAuthDom()
+    const user = this.getUser(email); // здесь this (контекст вызова) это объект setUsers, т.к метод logIn() вызывается у объекта setUsers (строка 90)
     if(user && user.password === password) {
       this.authorizedUser(user);
       handler();
@@ -58,12 +61,15 @@ const setUsers = {
       alert('Пользователь с такими данными не найден');
     }
   },
+  //Выход
   logOut() {
     console.log('Выход');
   },
-  signUp(email, password, handler) {  // handler - функция "действие" - это есть третий аргумент toggleAuthDom()
+  //Регистрация
+  signUp(email, password, handler) {  
     if(!this.getUser(email)) {
-      const user = {email, password, displayName: email};
+      const nickName = email.split('@'); // разделили почту на никнейм и почтовый ящик
+      const user = {email, password, displayName: `${nickName[0]}`};
       listUsers.push(user); 
       this.authorizedUser(user); // регистрация пользователя
       handler(); // замена блоков - toogleAuthDom
