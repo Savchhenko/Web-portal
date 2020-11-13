@@ -117,20 +117,29 @@ const setPosts = {
     {
       title: "Заголовок поста",
       text: "Далеко-далеко за словесными горами в стране гласных и согласных живут рыбные тексты. Языком что рот маленький реторический вершину текстов обеспечивает гор свой назад решила сбить маленькая дорогу жизни рукопись ему букв деревни предложения, ручеек залетают продолжил парадигматическая? Но языком сих пустился, запятой своего его снова решила меня вопроса моей своих пояс коварный, власти диких правилами напоивший они текстов ipsum первую подпоясал? Лучше, щеке подпоясал приставка большого курсивных на берегу своего? Злых, составитель агентство что вопроса ведущими о решила одна алфавит!",
-      tags: ['#свежее', '#новое', '#горячее', '#мое', '#случайность'],
-      author: 'svchhh18@gmail.com',
-      date: '11.11.2020, 20:54:00',
+      tags: ['свежее', 'новое', 'горячее', 'мое', 'случайность'],
+      author: {displayName: 'Alya', photo: 'https://avatars0.githubusercontent.com/u/47991015?s=460&u=d2c935aa3f105c9294acd1a6021e63ee44fac091&v=4'},
+      date: '13.11.2020, 20:54:00',
       like: 21,
       comments: 6,
     },
     {
       title: "Заголовок поста 2",
       text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, atque! Laborum officiis molestiae accusamus placeat nulla optio corporis, explicabo voluptatum itaque, veniam deleniti eum dolores, cum hic adipisci facilis sapiente. Debitis quo accusamus, cupiditate nisi aliquid, impedit necessitatibus assumenda rerum iusto saepe harum totam nulla sint soluta deleniti possimus. Beatae, culpa. Cumque corporis aliquid quaerat quasi numquam quae ullam rem!",
-      tags: ['#свежее', '#новое', '#горячее', '#мое'],
-      author: 'prettyCat1@gmail.com',
-      date: '13.11.2020, 11:34:10',
-      like: 9,
-      comments: 1,
+      tags: ['свежее', 'новое', 'горячее', 'мое'],
+      author: {displayName: 'Serjio', photo: 'https://manrule.ru/images/article/orig/2019/11/muzhskie-shlyapy-raznovidnosti-i-sovety-po-vyboru.jpg'},
+      date: '11.11.2020, 11:34:10',
+      like: 30,
+      comments: 2,
+    },
+    {
+      title: "Заголовок поста 3",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, atque! Laborum officiis molestiae accusamus placeat nulla optio corporis, explicabo voluptatum itaque, veniam deleniti eum dolores, cum hic adipisci facilis sapiente. Debitis quo accusamus, cupiditate nisi aliquid, impedit necessitatibus assumenda rerum iusto saepe harum totam nulla sint soluta deleniti possimus. Beatae, culpa. Cumque corporis aliquid quaerat quasi numquam quae ullam rem!",
+      tags: ['новое', 'горячее', 'мое'],
+      author: {displayName: 'Marshak', photo: 'https://i02.fotocdn.net/s119/4a80fa2306c38236/user_xl/2713652014.jpg'},
+      date: '8.11.2020, 10:05:19',
+      like: 39,
+      comments: 11,
     }
   ],
 };
@@ -139,10 +148,10 @@ const showAllPosts = () => {
 
   let postsHTML = '';
 
-  setPosts.allPosts.forEach(post => {
+  setPosts.allPosts.forEach(({ title, text, tags, like, comments, author, date }) => {
 
-    // Пример деструктуризации:
-    const { title, text, tags, like, comments, author, date } = post;
+    /* Пример деструктуризации:
+      const { title, text, tags, like, comments, author, date } = post; */
 
     postsHTML += `
         <section class="post">
@@ -150,7 +159,7 @@ const showAllPosts = () => {
           <h2 class="post-title">${title}</h2>
           <p class="post-text">${text}</p>
           <div class="tags">
-            <a href="#" class="tag"> ${tags} </a>
+            ${tags.map(tag => `<a href="#" class="tag">#${tag}</a>`)}
           </div>
         </div>
         <div class="post-footer">
@@ -180,14 +189,14 @@ const showAllPosts = () => {
           </div>
           <div class="post-author">
             <div class="author-about">
-              <a href="#" class="author-username">${author.substring(0, author.indexOf('@'))}</a>
+              <a href="#" class="author-username">${author.displayName}</a>
               <span class="post-time">${date}</span>
             </div>
-            <a href="#" class="author-link"><img src="img/Grizzly.png" alt="avatar" class="author-avatar"></a>
+            <a href="#" class="author-link"><img src=${author.photo || "img/Grizzly.png"} alt="avatar" class="author-avatar"></a>
           </div>
         </div>
       </section>
-    `
+    `;
   });
 
   postsWrapper.innerHTML = postsHTML;
@@ -204,7 +213,7 @@ const init = () => {
   loginForm.addEventListener('submit', event => {
     event.preventDefault();
     setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom);
-    loginForm.reset(); // очищение формы
+    loginForm.reset(); // очистка формы
   });
   
   loginSignup.addEventListener('click', event => {

@@ -123,13 +123,17 @@ body {
 }
 .tags {
   margin-bottom: 22px;
+  color: #bfbfbf;
 }
 .tag {
   color: #bfbfbf;
   font-size: 14px;
   line-height: 22px;
-  margin-right: 10px;
+  margin-left: 10px;
   text-decoration: none;
+}
+.tag:first-child {
+  margin-left: 0;
 }
 .post-footer {
   border-top: 1px solid #e8e8e8;
@@ -169,6 +173,7 @@ body {
   text-align: right;
 }
 .author-avatar {
+  object-fit: cover;
   width: 34px;
   height: 34px;
   margin-left: 9px;
