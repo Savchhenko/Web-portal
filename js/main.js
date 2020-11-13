@@ -91,8 +91,9 @@ const setUsers = {
     }
 
     if(!this.getUser(email)) {
-      const nickName = email.split('@'); // разделили почту на никнейм и почтовый ящик
-      const user = {email, password, displayName: `${nickName[0]}`};
+      /* const nickName = email.split('@'); // разделили почту на никнейм и почтовый ящик
+      const user = {email, password, displayName: `${nickName[0]}`}; */
+      const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
       listUsers.push(user); 
       this.authorizedUser(user); // регистрация пользователя
       handler(); // замена блоков - toogleAuthDom
