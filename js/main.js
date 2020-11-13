@@ -16,6 +16,10 @@ const loginElem = document.querySelector('.login'),
 const userElem = document.querySelector('.user'),
   userNameElem = document.querySelector('.user-name');
 
+const regExpValidEmail = /^\w+@\w+\.\w{2,}$/;  //проверка на ввод почты при регистрации
+
+const exitElem = document.querySelector('.exit');
+
   // массив хранит пользователей, где displayName это никнейм 
 const listUsers = [
   {
@@ -53,6 +57,9 @@ const setUsers = {
   user: null,
   //Авторизация
   logIn(email, password, handler) {  // handler - функция "действие" - это есть третий аргумент toggleAuthDom()
+    // test - метод, который проверяет совпадение с регулярным выражением
+    if(!regExpValidEmail.test(email)) return alert('email не валиден');  // return прерывает дальнейшее выполнение кода
+
     const user = this.getUser(email); // здесь this (контекст вызова) это объект setUsers, т.к метод logIn() вызывается у объекта setUsers (строка 90)
     if(user && user.password === password) {
       this.authorizedUser(user);
@@ -62,11 +69,13 @@ const setUsers = {
     }
   },
   //Выход
-  logOut() {
-    console.log('Выход');
+  logOut(handler) {
+    this.user = null;
+    handler();
   },
   //Регистрация
   signUp(email, password, handler) {  
+    if(!regExpValidEmail.test(email)) return alert('email не валиден');
     
     if(!email.trim() || !password.trim()) {
       alert('Введите данные');
@@ -102,6 +111,11 @@ loginSignup.addEventListener('click', event => {
   setUsers.signUp(emailInput.value, passwordInput.value, toggleAuthDom);
   loginForm.reset();
 });
+
+exitElem.addEventListener('click', event => {
+  event.preventDefault();
+  setUsers.logOut(toggleAuthDom);
+})
 
 toggleAuthDom();
 
