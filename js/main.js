@@ -94,11 +94,13 @@ const setUsers = {
 loginForm.addEventListener('submit', event => {
   event.preventDefault();
   setUsers.logIn(emailInput.value, passwordInput.value, toggleAuthDom);
+  loginForm.reset(); // очищение формы
 });
 
 loginSignup.addEventListener('click', event => {
   event.preventDefault();
   setUsers.signUp(emailInput.value, passwordInput.value, toggleAuthDom);
+  loginForm.reset();
 });
 
 toggleAuthDom();
