@@ -263,7 +263,7 @@ body {
 }
 .user-avatar {
   border-radius: 50%;
-  margin-right: 17px;
+  margin-right: 10px;
 }
 .user-name {
   font-weight: 600;
@@ -274,11 +274,19 @@ body {
 .edit-container {
   display: none;
 }
-.edin-container.visible {
+.edit-container.visible {
   display: block;
 }
 .edit {
   margin-right: 10px;
+}
+.edit-title {
+  text-align: center;
+  margin: 20px 0;
+  padding-left: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #595959;
 }
 .edit-btn {
   background-color: #fa8c16;

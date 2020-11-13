@@ -18,7 +18,13 @@ const userElem = document.querySelector('.user'),
 
 const regExpValidEmail = /^\w+@\w+\.\w{2,}$/;  //проверка на ввод почты при регистрации
 
-const exitElem = document.querySelector('.exit');
+const exitElem = document.querySelector('.exit'),
+  editElem = document.querySelector('.edit'),
+  editContainer = document.querySelector('.edit-container'),
+  editUsername = document.querySelector('.edit-username'),
+  editPhotoURL = document.querySelector('.edit-photo'),
+  userAvatarElem = document.querySelector('.user-avatar');
+
 
   // массив хранит пользователей, где displayName это никнейм 
 const listUsers = [
@@ -39,14 +45,16 @@ const listUsers = [
   }
 ];
 
-// функция проверяет есть ли зарегистрированный пользователь, и если есть, то выводит его никнейм и фото, иначе выводит блок с авторизацией
+// callback функция
+// проверяет есть ли зарегистрированный пользователь, и если есть, то выводит его никнейм и фото, иначе выводит блок с авторизацией
 const toggleAuthDom = () => {
   const user = setUsers.user;
-  console.log('user: ', user);
   if(user) {
     loginElem.style.display = 'none';
     userElem.style.display = '';
     userNameElem.textContent = user.displayName; //записывается никнейм пользователя 
+    userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;
+  /*userAvatarElem.src = user.photo || userAvatarElem.src;  - второй вариант*/
   } else {
     loginElem.style.display = '';
     userElem.style.display = 'none';
@@ -97,6 +105,15 @@ const setUsers = {
   },
   authorizedUser(user) {
     this.user = user;
+  },
+  editUser(userName, userPhoto, handler) {
+    if(userName) {
+      this.user.displayName = userName;
+    }
+    if(userPhoto) {
+      this.user.photo = userPhoto;
+    } 
+    handler();
   }
 };
 
@@ -115,6 +132,18 @@ loginSignup.addEventListener('click', event => {
 exitElem.addEventListener('click', event => {
   event.preventDefault();
   setUsers.logOut(toggleAuthDom);
+});
+
+editElem.addEventListener('click', event => {
+  event.preventDefault();
+  editContainer.classList.toggle('visible');
+  editUsername.value = setUsers.user.displayName;
+});
+
+editContainer.addEventListener('submit', event => {
+  event.preventDefault();
+  setUsers.editUser(editUsername.value, editPhotoURL.value, toggleAuthDom);
+  editContainer.classList.remove('visible');
 })
 
 toggleAuthDom();
