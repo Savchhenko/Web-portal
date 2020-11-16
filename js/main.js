@@ -64,10 +64,6 @@ const toggleAuthDom = () => {
     buttonNewPost.classList.remove('visible');
     addPostElem.classList.remove('visible');
     postsWrapper.classList.add('visible');
-    // TODO удалить 
-    addPostElem.classList.add('visible');
-    postsWrapper.classList.remove('visible');
-    // end
   }
 };
 
@@ -303,6 +299,7 @@ const init = () => {
     setPosts.addPost(title.value, text.value, tags.value, showAllPosts);
     
     addPostElem.classList.remove('visible');
+    addPostElem.reset();
   })
 
   showAllPosts();
