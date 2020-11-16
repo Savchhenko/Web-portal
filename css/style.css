@@ -95,7 +95,11 @@ body {
   justify-content: space-between;
 }
 .posts {
+  display: none;
   width: 67%;
+}
+.posts.visible {
+  display: block;
 }
 .post {
   background-color: #fff;
@@ -385,6 +389,9 @@ body {
   width: 100%;
   margin-top: 20px;
 }
+.button-new-post.visible {
+  display: flex;
+}
 .icon-fire {
   fill: #fff;
   width: 11px;
@@ -452,22 +459,28 @@ body {
   color: #ffffff;
 }
 .add-post {
-  display: flex;
+  display: none;
   flex-direction: column;
+  width: 67%;
+}
+.add-post.visible {
+  display: flex;
 }
 .add-title,
-.add-text {
+.add-text,
+.add-tags {
   background: #ffffff;
   border: 1px solid #e8e8e8;
   padding: 23px 30px;
   margin-bottom: 16px;
+  resize: none; /*фиксированный размер*/
 }
 .add-text {
   min-height: 362px;
 }
 .add-button {
   width: 100%;
-  max-width: 370px;
+  /* max-width: 370px; */
   margin-right: 2%;
 }
 .add-post .button-outline {
@@ -517,9 +530,6 @@ body {
   }
   .sidebar.visible {
     transform: translateX(0);
-  }
-  .posts {
-    width: 100%;
   }
   .header-nav {
     display: none;

@@ -19,7 +19,10 @@ const exitElem = document.querySelector('.exit'),
   editPhotoURL = document.querySelector('.edit-photo'),
   userAvatarElem = document.querySelector('.user-avatar');
 
-const postsWrapper = document.querySelector('.posts');
+const postsWrapper = document.querySelector('.posts'),
+  buttonNewPost = document.querySelector('.button-new-post'),
+  addPostElem = document.querySelector('.add-post');
+
 
 
   // массив хранит пользователей, где displayName это никнейм 
@@ -28,16 +31,19 @@ const listUsers = [
     email: 'svchhh18@gmail.com',
     password: '12345',
     displayName: 'AlyaSun',
+    photo: 'https://avatars0.githubusercontent.com/u/47991015?s=460&u=d2c935aa3f105c9294acd1a6021e63ee44fac091&v=4',
   },
   {
     email: 'bangzan@yandex.ru',
     password: '01012020',
     displayName: 'Serjio',
+    photo: 'https://manrule.ru/images/article/orig/2019/11/muzhskie-shlyapy-raznovidnosti-i-sovety-po-vyboru.jpg',
   },
   {
     email: 'prettyCat1@gmail.com',
     password: '9999',
     displayName: 'LunaBoss',
+    photo: 'https://zagge.ru/wp-content/uploads/2019/06/aHR0cDovL3d3dy5saXZlc2N.jpg',
   }
 ];
 
@@ -51,11 +57,24 @@ const toggleAuthDom = () => {
     userNameElem.textContent = user.displayName; //записывается никнейм пользователя 
     userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;
   /*userAvatarElem.src = user.photo || userAvatarElem.src;  - второй вариант*/
+    buttonNewPost.classList.add('visible');
   } else {
     loginElem.style.display = '';
     userElem.style.display = 'none';
+    buttonNewPost.classList.remove('visible');
+    addPostElem.classList.remove('visible');
+    postsWrapper.classList.add('visible');
+    // TODO удалить 
+    addPostElem.classList.add('visible');
+    postsWrapper.classList.remove('visible');
+    // end
   }
 };
+
+const showAddPost = () => {
+  addPostElem.classList.add('visible');
+  postsWrapper.classList.remove('visible');
+}
 
 const setUsers = {
   user: null,
@@ -75,7 +94,9 @@ const setUsers = {
   //Выход
   logOut(handler) {
     this.user = null;
-    handler();
+    if(handler) {
+      handler();
+    }
   },
   //Регистрация
   signUp(email, password, handler) {  
@@ -90,7 +111,9 @@ const setUsers = {
       const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
       listUsers.push(user); 
       this.authorizedUser(user); // регистрация пользователя
-      handler(); // замена блоков - toogleAuthDom
+      if(handler) { 
+        handler(); // замена блоков - toogleAuthDom
+      } 
     } else {
       alert('Пользователь с таким email уже зарегистрирован');
     }
@@ -108,7 +131,9 @@ const setUsers = {
     if(userPhoto) {
       this.user.photo = userPhoto;
     } 
-    handler();
+    if(handler) {
+      handler();
+    }
   }
 };
 
@@ -142,17 +167,32 @@ const setPosts = {
       comments: 11,
     }
   ],
+  addPost(title, text, tags, handler) {
+    this.allPosts.unshift({
+      title,
+      text,
+      tags: tags.split(',').map(item => item.trim()), // разбили строку на отдельные элементы и удалили пробелы
+      author: {
+        displayName: setUsers.user.displayName,
+        photo: setUsers.user.photo,
+      },
+      date: new Date().toLocaleString(),
+      like: 0,
+      comments: 0,
+    });
+    // проверка на наличие call-back функции
+    // защита на случай, если нужно выполнить действие, но не вызывать функцию
+    if(handler) {
+      handler();
+    }
+  }
 };
 
 const showAllPosts = () => {
-
   let postsHTML = '';
-
   setPosts.allPosts.forEach(({ title, text, tags, like, comments, author, date }) => {
-
     /* Пример деструктуризации:
       const { title, text, tags, like, comments, author, date } = post; */
-
     postsHTML += `
         <section class="post">
         <div class="post-body">
@@ -198,9 +238,9 @@ const showAllPosts = () => {
       </section>
     `;
   });
-
   postsWrapper.innerHTML = postsHTML;
-
+  addPostElem.classList.remove('visible');
+  postsWrapper.classList.add('visible');
 }
 
 const init = () => {
@@ -238,6 +278,32 @@ const init = () => {
     setUsers.editUser(editUsername.value, editPhotoURL.value, toggleAuthDom);
     editContainer.classList.remove('visible');
   });
+
+  buttonNewPost.addEventListener('click', event => {
+    event.preventDefault();
+    showAddPost();
+  })
+
+  addPostElem.addEventListener('submit', event => {
+    event.preventDefault();
+    //деструктуризация по имени (имя берется из значения атрибута name в форме):
+    const { title, text, tags } = addPostElem.elements; // получили псевдо-массив
+    console.log( title, text, tags );
+    
+    if(title.value.length < 6) {
+      alert('Слишком короткий заголовок');
+      return;
+    }
+
+    if(text.value.length < 50) {
+      alert('Слишком короткий пост');
+      return;
+    }
+
+    setPosts.addPost(title.value, text.value, tags.value, showAllPosts);
+    
+    addPostElem.classList.remove('visible');
+  })
 
   showAllPosts();
   toggleAuthDom();
