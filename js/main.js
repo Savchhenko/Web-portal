@@ -38,7 +38,8 @@ const postsWrapper = document.querySelector('.posts'),
   buttonNewPost = document.querySelector('.button-new-post'),
   addPostElem = document.querySelector('.add-post');
 
-
+const subscriptionsElem = document.querySelector('.subscriptions');
+console.log('subscriptionsElem: ', subscriptionsElem);
 
   // массив хранит пользователей, где displayName это никнейм 
 const listUsers = [
@@ -73,12 +74,15 @@ const toggleAuthDom = () => {
     userAvatarElem.src = user.photo ? user.photo : userAvatarElem.src;
   /*userAvatarElem.src = user.photo || userAvatarElem.src;  - второй вариант*/
     buttonNewPost.classList.add('visible');
+    subscriptionsElem.style.display = 'flex';
+    
   } else {
     loginElem.style.display = '';
     userElem.style.display = 'none';
     buttonNewPost.classList.remove('visible');
     addPostElem.classList.remove('visible');
     postsWrapper.classList.add('visible');
+    subscriptionsElem.style.display = 'none';
   }
 };
 
@@ -305,7 +309,6 @@ const init = () => {
       alert('Слишком короткий заголовок');
       return;
     }
-
     if(text.value.length < 50) {
       alert('Слишком короткий пост');
       return;
