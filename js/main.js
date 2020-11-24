@@ -188,13 +188,28 @@ const setUsers = {
   authorizedUser(user) {
     this.user = user;
   },
-  editUser(userName, userPhoto, handler) {
-    if(userName) {
-      this.user.displayName = userName;
+  editUser(displayName, photoURL, handler) {
+    const user = firebase.auth().currentUser;
+
+    // const userUpdate = {
+    //   displayName,
+    // };
+
+
+    if(displayName) {
+      if(photoURL) {
+        user.updateProfile({
+          displayName,
+          photoURL,
+        })
+      } else {
+          user.updateProfile({
+            displayName
+          })
+        }
     }
-    if(userPhoto) {
-      this.user.photo = userPhoto;
-    } 
+    console.log(displayName);
+    
     if(handler) {
       handler();
     }
@@ -375,6 +390,7 @@ const init = () => {
 
 document.addEventListener('DOMContentLoaded', init);
 
+//TODO: в SignUp с помощью метода emailVarified сделать варификацию почты
 
 
 
