@@ -109,20 +109,37 @@ const setUsers = {
     // test - метод, который проверяет совпадение с регулярным выражением
     if(!regExpValidEmail.test(email)) return alert('email не валиден');  // return прерывает дальнейшее выполнение кода
 
-    const user = this.getUser(email); // здесь this (контекст вызова) это объект setUsers, т.к метод logIn() вызывается у объекта setUsers (строка 90)
-    if(user && user.password === password) {
-      this.authorizedUser(user);
-      handler();
-    } else {
-      alert('Пользователь с такими данными не найден');
-    }
+  firebase.auth().signInWithEmailAndPassword(email, password).catch(err => {
+    const errCode = err.code;
+        const errMessage = err.message;
+        if(errCode === 'auth/wrong-password') {
+          console.log(errMessage);
+          alert('Неверный пароль');
+        } else if(errCode === 'auth/user-not-found') {
+          console.log(errMessage);
+          alert('Пользователь не найден');
+        } else {
+          alert(errMessage);
+        }
+
+        console.log(err);
+  });
+
+    // const user = this.getUser(email); // здесь this (контекст вызова) это объект setUsers, т.к метод logIn() вызывается у объекта setUsers (строка 90)
+    // if(user && user.password === password) {
+    //   this.authorizedUser(user);
+    //   handler();
+    // } else {
+    //   alert('Пользователь с такими данными не найден');
+    // }
   },
   //Выход
   logOut(handler) {
-    this.user = null;
-    if(handler) {
-      handler();
-    }
+    firebase.auth().signOut();
+
+    // if(handler) {
+    //   handler();
+    // }
   },
   //Регистрация
   signUp(email, password, handler) {  
