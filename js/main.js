@@ -39,7 +39,6 @@ const postsWrapper = document.querySelector('.posts'),
   addPostElem = document.querySelector('.add-post');
 
 const subscriptionsElem = document.querySelector('.subscriptions');
-console.log('subscriptionsElem: ', subscriptionsElem);
 
   // массив хранит пользователей, где displayName это никнейм 
 const listUsers = [
@@ -93,6 +92,18 @@ const showAddPost = () => {
 
 const setUsers = {
   user: null,
+  // handler замкнется в этом слушателе
+  initUser(handler) {
+    // метод auth() возвращает объект; onAuthStateChanged - это слушатель
+    firebase.auth().onAuthStateChanged(user => {
+      if(user) {
+        this.user = user;
+      } else {
+        this.user = null;
+      }
+      if(handler) {handler();}
+    })
+  },
   //Авторизация
   logIn(email, password, handler) {  // handler - функция "действие" - это есть третий аргумент toggleAuthDom()
     // test - метод, который проверяет совпадение с регулярным выражением
@@ -122,16 +133,37 @@ const setUsers = {
       return;
     }
 
-    if(!this.getUser(email)) {
-      const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
-      listUsers.push(user); 
-      this.authorizedUser(user); // регистрация пользователя
-      if(handler) { 
-        handler(); // замена блоков - toogleAuthDom
-      } 
-    } else {
-      alert('Пользователь с таким email уже зарегистрирован');
-    }
+    // метод возвращает promise
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(data => {
+        console.log(data);
+      }) //сработает в случае успеха
+      .catch(err => {
+        const errCode = err.code;
+        const errMessage = err.message;
+        if(errCode === 'auth/weak-password') {
+          console.log(errMessage);
+          alert('Слабый пароль');
+        } else if(errCode === 'auth/email-already-in-use') {
+          console.log(errMessage);
+          alert('Этот email уже используется');
+        } else {
+          alert(errMessage);
+        }
+
+        console.log(err);
+      }); //сработает в случае ошибки
+
+    // if(!this.getUser(email)) {
+    //   const user = {email, password, displayName: email.substring(0, email.indexOf('@'))};
+    //   listUsers.push(user); 
+    //   this.authorizedUser(user); // регистрация пользователя
+    //   if(handler) { 
+    //     handler(); // замена блоков - toogleAuthDom
+    //   } 
+    // } else {
+    //   alert('Пользователь с таким email уже зарегистрирован');
+    // }
   },
   getUser(email) {
     return listUsers.find(item => item.email === email)
@@ -320,8 +352,8 @@ const init = () => {
     addPostElem.reset();
   })
 
+  setUsers.initUser(toggleAuthDom);
   showAllPosts();
-  toggleAuthDom();
 }
 
 document.addEventListener('DOMContentLoaded', init);
